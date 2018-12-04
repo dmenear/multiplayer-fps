@@ -10,6 +10,12 @@ public class GameManager : MonoBehaviour {
 	[SerializeField]
 	private GameObject sceneCamera;
 
+	[SerializeField]
+	public GameObject killFeed;
+
+	[SerializeField]
+	public GameObject killFeedItemPrefab;
+
 
 	void Awake (){
 		if (singleton != null){

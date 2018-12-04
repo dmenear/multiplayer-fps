@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
@@ -43,7 +44,6 @@ public class PlayerManager : NetworkBehaviour {
 	}
 
 	void OnNameUpdate(string newName){
-		Debug.Log(newName);
 		playerName = newName;
 		transform.name = newName;
 	}
@@ -72,7 +72,7 @@ public class PlayerManager : NetworkBehaviour {
 	void Update(){
 		if(isLocalPlayer){
 			if(Input.GetKeyDown(KeyCode.K)){
-				RpcTakeDamage(9999);
+				RpcTakeDamage(this.name, 9999);
 			}
 		}
 	}
@@ -103,19 +103,19 @@ public class PlayerManager : NetworkBehaviour {
 	}
 
 	[ClientRpc]
-	public void RpcTakeDamage(int amount){
+	public void RpcTakeDamage(string attacker, int amount){
 		if(isDead) return;
 
 		currentHealth -= amount;
 
-		Debug.Log (transform.name + " now has " + currentHealth + " health.");
+		Debug.Log (transform.name + " was shot by " + attacker + " and now has " + currentHealth + " health.");
 
 		if (currentHealth <= 0){
-			Die();
+			Die(attacker);
 		}
 	}
 
-	private void Die(){
+	private void Die(string attacker){
 		isDead = true;
 
 		playerShoot.stopShooting();
@@ -139,6 +139,7 @@ public class PlayerManager : NetworkBehaviour {
 
 		//Switch cameras
 		if (isLocalPlayer){
+			CmdUpdateKillFeed(attacker, playerName);
 			GameManager.singleton.setSceneCameraActive(true);
 			GetComponent<PlayerSetup>().playerUIInstance.SetActive(false);
 			Cursor.lockState = CursorLockMode.None;
@@ -148,6 +149,20 @@ public class PlayerManager : NetworkBehaviour {
 		Debug.Log(transform.name + " is dead.");
 
 		StartCoroutine(Respawn());
+	}
+
+	[Command]
+	private void CmdUpdateKillFeed(string attacker, string victim){
+		RpcUpdateKillFeed(attacker, victim);
+	}
+
+	[ClientRpc]
+	private void RpcUpdateKillFeed(string attacker, string victim){
+		GameObject killFeed = GameManager.singleton.killFeed;
+		GameObject newKillFeedItem = (GameObject)Instantiate(GameManager.singleton.killFeedItemPrefab);
+		newKillFeedItem.GetComponent<Text>().text = attacker + " killed " + victim;
+		newKillFeedItem.transform.SetParent(killFeed.transform);
+		Destroy(newKillFeedItem, 6f);
 	}
 
 	private IEnumerator Respawn(){
