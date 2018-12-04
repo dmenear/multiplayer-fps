@@ -11,7 +11,12 @@ public class PlayerName : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		inputPlayerName = GetComponent<InputField>();
-		PlayerPrefs.SetString("PlayerName", inputPlayerName.text);
+		if(PlayerPrefs.HasKey("PlayerName") && PlayerPrefs.GetString("PlayerName") != "" && PlayerPrefs.GetString("PlayerName") != null){
+			inputPlayerName.text = PlayerPrefs.GetString("PlayerName");
+		} else{
+			inputPlayerName.text = "Player";
+			PlayerPrefs.SetString("PlayerName", inputPlayerName.text);
+		}
 	}
 	
 	public void SetPlayerName(string newName){
