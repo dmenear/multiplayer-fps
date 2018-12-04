@@ -29,22 +29,20 @@ public class GameManager : MonoBehaviour {
 
 	#region Player Tracking
 
-	private const string PLAYER_ID_PREFIX = "Player ";
 
 	private static Dictionary<string, PlayerManager> players = new Dictionary<string, PlayerManager>();
 
 	public static void RegisterPlayer(string netID, PlayerManager player){
-		string playerID = PLAYER_ID_PREFIX + netID;
-		players.Add(playerID, player);
-		player.transform.name = playerID;
+		players.Add(netID, player);
+		player.transform.name = netID;
 	}
 
-	public static void UnregisterPlayer(string playerID){
-		players.Remove(playerID);
+	public static void UnregisterPlayer(string netID){
+		players.Remove(netID);
 	}
 
-	public static PlayerManager GetPlayer (string playerID){
-		return players[playerID];
+	public static PlayerManager GetPlayer (string netID){
+		return players[netID];
 	}
 	
 	// void OnGUI(){

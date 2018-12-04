@@ -21,6 +21,9 @@ public class PlayerManager : NetworkBehaviour {
 	[SyncVar]
 	private int currentHealth;
 
+	[SyncVar(hook="OnNameUpdate")]
+	private string playerName = "";
+
 	[SerializeField]
 	private Behaviour[] disableOnDeath;
 	private bool[] wasEnabled;
@@ -39,14 +42,31 @@ public class PlayerManager : NetworkBehaviour {
 		playerShoot = GetComponent<PlayerShoot>();
 	}
 
+	void OnNameUpdate(string newName){
+		Debug.Log(newName);
+		playerName = newName;
+		transform.name = newName;
+	}
+
 	public void SetupPlayer(){
 		if(isLocalPlayer){
+			CmdUpdateName(PlayerPrefs.GetString("PlayerName"));
 			GameManager.singleton.setSceneCameraActive(false);
 			GetComponent<PlayerSetup>().playerUIInstance.SetActive(true);
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 		}
 		CmdBroadcastNewPlayerSetup();
+	}
+
+	[Command]
+	private void CmdUpdateName(string name){
+		RpcUpdateName(name);
+	}
+
+	[ClientRpc]
+	private void RpcUpdateName(string name){
+		playerName = name;
 	}
 
 	void Update(){
@@ -76,6 +96,10 @@ public class PlayerManager : NetworkBehaviour {
 
 	public int GetPlayerHealth(){
 		return currentHealth;
+	}
+
+	public string GetPlayerName(){
+		return playerName;
 	}
 
 	[ClientRpc]

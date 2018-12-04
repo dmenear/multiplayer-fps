@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 114448984075329544}
   - component: {fileID: 114425460608928410}
   - component: {fileID: 114111576000389548}
+  - component: {fileID: 114409594921301680}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -54,6 +55,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomSize: 10
+--- !u!114 &114409594921301680
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1959393052602578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114425460608928410
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -150,4 +162,4 @@ MonoBehaviour:
   matchName: default
   matchSize: 4
   isNetworkActive: 0
-  matchMaker: {fileID: 0}
+  matchMaker: {fileID: 114409594921301680}

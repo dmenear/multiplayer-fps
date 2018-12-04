@@ -120,7 +120,7 @@ public class PlayerShoot : NetworkBehaviour {
 		shootDirection.z += Random.Range(-currentSpread, currentSpread);
 		if (Physics.Raycast(cam.transform.position, shootDirection, out hit, currentWeapon.range, mask)){
 			if (hit.collider.tag == PLAYER_TAG){
-				CmdPlayerShot(hit.collider.name, currentWeapon.damage);
+				CmdPlayerShot(hit.collider.GetComponent<NetworkIdentity>().netId.ToString(), currentWeapon.damage);
 				hitEffect = "metal";
 			} else{
 				hitEffect = "brick";
@@ -131,10 +131,10 @@ public class PlayerShoot : NetworkBehaviour {
 	}
 
 	[Command]
-	void CmdPlayerShot(string playerID, int damage){
-		Debug.Log (playerID + " has been shot.");
+	void CmdPlayerShot(string netID, int damage){
+		Debug.Log (netID + " has been shot.");
 
-		PlayerManager player = GameManager.GetPlayer(playerID);
+		PlayerManager player = GameManager.GetPlayer(netID);
 		player.RpcTakeDamage(damage);
 	}
 }

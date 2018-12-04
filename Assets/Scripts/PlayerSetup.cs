@@ -57,7 +57,7 @@ public class PlayerSetup : NetworkBehaviour {
 	
 	void OnDisable(){
 		Destroy(playerUIInstance);
-		GameManager.UnregisterPlayer(transform.name);
+		GameManager.UnregisterPlayer(GetComponent<NetworkIdentity>().netId.ToString());
 		if(isLocalPlayer){
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
